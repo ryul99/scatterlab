@@ -17,30 +17,35 @@ class User(models.Model):
 
 
 class Post(models.Model):
+    writer = models.ForeignKey(User)
     title = models.CharField(max_length=120)
     post_body = models.TextField(default="text")
-    like = models.ManyToManyField(User, related_name="likes")
-    hate = models.ManyToManyField(User, related_name="hate")
+    like_user = models.ManyToManyField(User, related_name="likes")
+    hate_user = models.ManyToManyField(User, related_name="hate")
 
     def to_dict(self):
         return {
             'id': self.id,
             'title': self.title,
             'post_body': self.post_body,
-            'like': list(self.like.values_list('id', flat=True).all()),
-            'hate': list(self.hate.values_list('id', flat=True).all()),
+            'like_user': list(self.like_user.values_list('id', flat=True).all()),
+            'hate_user': list(self.hate_user.values_list('id', flat=True).all()),
         }
 
     
 class comment(models.Model):
     post = models.ForeignKey(Post, related_name="comments")
-    user = models.ForeignKey(User, related_name="comments")
+    writer = models.ForeignKey(User, related_name="comments")
     text = models.TextField(default="comment")
+    like_user = models.ManyToManyField(User, related_name="likes")
+    hate_user = models.ManyToManyField(User, related_name="hate")
 
     def to_dict(self):
         return {
             'id': self.id,
             'post': self.post.id,
-            'user': self.user.id,
+            'writer': self.writer.id,
             'text': self.text,
+            'like_user': list(self.like_user.values_list('id', flat=True).all()),
+            'hate_user': list(self.hate_user.values_list('id', flat=True).all()),
         }
