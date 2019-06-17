@@ -1,7 +1,7 @@
 from django.urls import path
 from api import views
 
-urlspatterns = [
+urlpatterns = [
     path('posts/', views.article),
     path('posts/<int:post_id>', views.specific_article),
     path('posts/<int:post_id>/comment', views.comment),
