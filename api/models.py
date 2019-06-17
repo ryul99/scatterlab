@@ -26,6 +26,7 @@ class Post(models.Model):
     def to_dict(self):
         return {
             'id': self.id,
+            'writer': self.writer.id,
             'title': self.title,
             'post_body': self.post_body,
             'like_user': list(self.like_user.values_list('id', flat=True).all()),

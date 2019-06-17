@@ -47,7 +47,7 @@ def specific_article(request: HttpRequest, post_id):
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
             return HttpResponseNotFound()
-        if user != post.writer:
+        if user.id != post.writer.id:
             return HttpResponseBadRequest()
         post.title = title
         post.post_body = post_body
@@ -67,7 +67,7 @@ def specific_article(request: HttpRequest, post_id):
             user = User.objects.get(id=user_id)
         except User.DoesNotExist:
             return HttpResponseNotFound()
-        if user != post.writer:
+        if user.id != post.writer.id:
             return HttpResponseBadRequest()
         post.delete()
         return HttpResponse()
