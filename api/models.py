@@ -17,7 +17,7 @@ class User(models.Model):
 
 
 class Post(models.Model):
-    writer = models.ForeignKey(User)
+    writer = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
     post_body = models.TextField(default="text")
     like_user = models.ManyToManyField(User, related_name="likes")
@@ -34,8 +34,8 @@ class Post(models.Model):
 
     
 class comment(models.Model):
-    post = models.ForeignKey(Post, related_name="comments")
-    writer = models.ForeignKey(User, related_name="comments")
+    post = models.ForeignKey(Post, related_name="comments", on_delete=models.CASCADE)
+    writer = models.ForeignKey(User, related_name="comments", on_delete=models.CASCADE)
     text = models.TextField(default="comment")
     like_user = models.ManyToManyField(User, related_name="likes")
     hate_user = models.ManyToManyField(User, related_name="hate")
