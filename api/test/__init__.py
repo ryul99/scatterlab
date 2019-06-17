@@ -16,5 +16,5 @@ class TestCaseWithHttp(TestCase):
     def put(self, url, obj):
         return self.client.put(url, json.dumps(obj), content_type='application/json')
 
-    def delete(self, url):
-        return self.client.delete(url)
+    def delete(self, url, obj):
+        return self.client.delete(url, json.dumps(obj), content_type='application/json')

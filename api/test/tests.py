@@ -31,23 +31,23 @@ class PostTestCase(TestCaseWithHttp):
 
     def test_not_allowed(self):
         self.assertEqual(self.put('/api/posts/', {}).status_code, 405)
-        self.assertEqual(self.delete('/api/posts/').status_code, 405)
+        self.assertEqual(self.delete('/api/posts/', {}).status_code, 405)
 
         self.assertEqual(self.post('/api/posts/1/', {}).status_code, 405)
 
         self.assertEqual(self.put('/api/posts/1/like/', {}).status_code, 405)
         self.assertEqual(self.get('/api/posts/1/like/').status_code, 405)
-        self.assertEqual(self.delete('/api/posts/1/like/').status_code, 405)
+        self.assertEqual(self.delete('/api/posts/1/like/', {}).status_code, 405)
         self.assertEqual(self.put('/api/posts/1/hate/', {}).status_code, 405)
         self.assertEqual(self.get('/api/posts/1/hate/').status_code, 405)
-        self.assertEqual(self.delete('/api/posts/1/hate/').status_code, 405)
+        self.assertEqual(self.delete('/api/posts/1/hate/', {}).status_code, 405)
         
         self.assertEqual(self.put('/api/comments/1/like/', {}).status_code, 405)
         self.assertEqual(self.get('/api/comments/1/like/').status_code, 405)
-        self.assertEqual(self.delete('/api/comments/1/like/').status_code, 405)        
+        self.assertEqual(self.delete('/api/comments/1/like/', {}).status_code, 405)        
         self.assertEqual(self.put('/api/comments/1/hate/', {}).status_code, 405)
         self.assertEqual(self.get('/api/comments/1/hate/').status_code, 405)
-        self.assertEqual(self.delete('/api/comments/1/hate/').status_code, 405)
+        self.assertEqual(self.delete('/api/comments/1/hate/', {}).status_code, 405)
 
 
     def test_get_articles(self):
@@ -97,3 +97,29 @@ class PostTestCase(TestCaseWithHttp):
         self.assertEqual(resp_json['writer'], new_post['user'])
         self.assertEqual(resp_json['title'], new_post['title'])
         self.assertEqual(resp_json['post_body'], new_post['post_body'])
+
+    def test_get_article(self):
+        self.assertEqual(self.get('/api/posts/44/', {}).status_code, 404)
+        resp = self.get('/api/posts/1/')
+        self.assertEqual(resp.status_code, 200)
+        resp_json = resp.json()
+        self.assertEqual(resp_json['writer'], self.post.to_dict()['writer'])
+        self.assertEqual(resp_json['title'], self.post.to_dict()['title'])
+        self.assertEqual(resp_json['post_body'], self.post.to_dict()['post_body'])
+
+    def test_delete_article(self):
+        self.assertEqual(self.delete('/api/posts/44/', {}).status_code, 404)
+        self.assertEqual(self.delete('/api/posts/1/', {}), 400)
+        self.assertEqual(self.delete('/api/posts/1/', {'user': 44}).status_code, 404)
+        
+        User(
+            sex = 'male',
+            nickname = 'uyu',
+            profile_photo = 'https://www.google.com',
+            birthday = date(2000,2,2),
+        )
+        self.assertEqual(self.delete('/api/posts/1/', {'user': 2}).status_code, 400)
+
+        self.assertEqual(self.delete('/api/posts/1', {'user': 1}).status_code, 200)
+
+
