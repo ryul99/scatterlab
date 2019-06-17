@@ -17,11 +17,11 @@ class User(models.Model):
 
 
 class Post(models.Model):
-    writer = models.ForeignKey(User, on_delete=models.CASCADE)
+    writer = models.ForeignKey(User, related_name="posts", on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
     post_body = models.TextField(default="text")
-    like_user = models.ManyToManyField(User, related_name="likes")
-    hate_user = models.ManyToManyField(User, related_name="hate")
+    like_user = models.ManyToManyField(User, related_name="like_post")
+    hate_user = models.ManyToManyField(User, related_name="hate_post")
 
     def to_dict(self):
         return {
@@ -37,8 +37,8 @@ class Comment(models.Model):
     post = models.ForeignKey(Post, related_name="comments", on_delete=models.CASCADE)
     writer = models.ForeignKey(User, related_name="comments", on_delete=models.CASCADE)
     text = models.TextField(default="comment")
-    like_user = models.ManyToManyField(User, related_name="likes")
-    hate_user = models.ManyToManyField(User, related_name="hate")
+    like_user = models.ManyToManyField(User, related_name="like_comment")
+    hate_user = models.ManyToManyField(User, related_name="hate_comment")
 
     def to_dict(self):
         return {
