@@ -122,4 +122,26 @@ class PostTestCase(TestCaseWithHttp):
 
         self.assertEqual(self.delete('/api/posts/1/', {'user': 1}).status_code, 200)
 
+    def test_comment(self):
+        self.assertEqual(self.post('/api/posts/44/comment/', {}).status_code, 404)
+        self.assertEqual(self.post('/api/posts/1/comment/', {}).status_code, 400)
+        self.assertEqual(self.post('/api/posts/1/comment/', {'writer': 11, 'text': 'uyu joa'}).status_code, 404)
+        
+        new_comment = {'writer': 1, 'text': 'uyu joa'}
+        resp = self.post('/api/posts/1/comment/', new_comment)
+        self.assertEqual(resp.status_code, 200)
+        resp_json = resp.json()
+        self.assertEqual(resp_json['writer'], new_comment['writer'])
+        self.assertEqual(resp_json['text'], new_comment['text'])
 
+    def like_post(self):
+        self.like_hate_test('posts', 'like', 'like_user')
+
+    def hate_post(self):
+        self.like_hate_test('posts', 'hate', 'hate_user')
+
+    def like_comment(self):
+        self.like_hate_test('comments', 'like', 'like_user')
+
+    def hate_comment(self):
+        self.like_hate_test('comments', 'hate', 'like_user')

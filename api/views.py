@@ -76,7 +76,7 @@ def specific_article(request: HttpRequest, post_id):
 @allow_method(['POST'])
 def comment(request: HttpRequest, post_id):
     try:
-        post = post.objects.get(id=post_id)
+        post = Post.objects.get(id=post_id)
     except Post.DoesNotExist:
         return HttpResponseNotFound()
     try:
