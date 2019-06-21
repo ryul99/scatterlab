@@ -8,7 +8,7 @@ from json.decoder import JSONDecodeError
 
 
 @allow_method(['GET', 'POST'])
-def article(request: HttpRequest):
+def post(request: HttpRequest):
     if request.method == 'GET':
         post_list = [post.to_dict() for post in Post.objects.all()]
         return JsonResponse(post_list, safe=False)
@@ -30,7 +30,7 @@ def article(request: HttpRequest):
 
 
 @allow_method(['PUT', 'GET', 'DELETE'])
-def specific_article(request: HttpRequest, post_id):
+def specific_post(request: HttpRequest, post_id):
     try:
         post = Post.objects.get(id=post_id)
     except Post.DoesNotExist:

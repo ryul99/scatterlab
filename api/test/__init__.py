@@ -24,4 +24,4 @@ class TestCaseWithHttp(TestCase):
         self.assertEqual(self.post('/api/{0}/1/{1}/'.format(obj, emo), {}).status_code, 400)
         self.assertEqual(self.post('/api/{0}/1/{1}/'.format(obj, emo), {'user': 2}).status_code, 404)
         self.assertEqual(self.post('/api/{0}/1/{1}/'.format(obj, emo), {'user': 1}).status_code, 200)
-        self.assertEqual(len(getattr(self.article, emo_list).filter(id = 1)), 1)
+        self.assertEqual(len(getattr(self.post1, emo_list).filter(id = 1)), 1)
