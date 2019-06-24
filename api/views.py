@@ -84,10 +84,11 @@ def comment(request: HttpRequest, writer: User, post: Post):
     return JsonResponse(comment.to_dict(), safe=False)
 
 
+# you dont need to save after add object to many to many relationship https://stackoverflow.com/questions/10366045/django-how-to-save-data-to-manytomanyfield
 @allow_method(['POST'])
 @get_post
 @get_user('user')
-def like_post(request, user, post):
+def like_post(request: HttpRequest, user: User, post: Post):
     post.like_user.add(user)
     return HttpResponse()
 
@@ -95,7 +96,7 @@ def like_post(request, user, post):
 @allow_method(['POST'])
 @get_post
 @get_user('user')
-def hate_post(request, user, post):
+def hate_post(request: HttpRequest, user: User, post: Post):
     post.hate_user.add(user)
     return HttpResponse()
 
@@ -103,7 +104,7 @@ def hate_post(request, user, post):
 @allow_method(['POST'])
 @get_comment
 @get_user('user')
-def like_comment(request, user, comment):
+def like_comment(request: HttpRequest, user: User, post: Post):
     comment.like_user.add(user)
     return HttpResponse()
 
@@ -111,6 +112,6 @@ def like_comment(request, user, comment):
 @allow_method(['POST'])
 @get_comment
 @get_user('user')
-def hate_comment(request, user, comment):
+def hate_comment(request: HttpRequest, user: User, post: Post):
     comment.like_user.add(user)
     return HttpResponse()
