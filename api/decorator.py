@@ -18,20 +18,22 @@ def allow_method(methods: list):
     return __decorator
 
 
-def get_user(func):
-    @wraps(func)
-    def __wrapper(request:HttpRequest, *args, **kwargs):
-        try:
-            req = json.loads(request.body.decode())
-            user_id = req['user']
-        except (JSONDecodeError, KeyError, ValueError):
-            return HttpResponseBadRequest()
-        try:
-            user = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            return HttpResponseNotFound()
-        return func(user, *args, **kwargs)
-    return __wrapper
+def get_user(want_user: str):
+    def __decorator(func):
+        @wraps(func)
+        def __wrapper(request:HttpRequest, *args, **kwargs):
+            try:
+                req = json.loads(request.body.decode())
+                user_id = req[want_user]
+            except (JSONDecodeError, KeyError, ValueError):
+                return HttpResponseBadRequest()
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                return HttpResponseNotFound()
+            return func(request, user, *args, **kwargs)
+        return __wrapper
+    return __decorator
 
 
 def get_post(func):

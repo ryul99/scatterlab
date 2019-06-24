@@ -30,11 +30,8 @@ def post(request: HttpRequest):
 
 
 @allow_method(['PUT', 'GET', 'DELETE'])
-def specific_post(request: HttpRequest, post_id):
-    try:
-        post = Post.objects.get(id=post_id)
-    except Post.DoesNotExist:
-        return HttpResponseNotFound()
+@get_post
+def specific_post(request: HttpRequest, post: Post):
     if request.method == 'PUT':
         try:
             req = json.loads(request.body.decode())
@@ -74,21 +71,14 @@ def specific_post(request: HttpRequest, post_id):
 
 
 @allow_method(['POST'])
-def comment(request: HttpRequest, post_id):
-    try:
-        post = Post.objects.get(id=post_id)
-    except Post.DoesNotExist:
-        return HttpResponseNotFound()
+@get_post
+@get_user('writer')
+def comment(request: HttpRequest, writer: User, post: Post):
     try:
         req = json.loads(request.body.decode())
-        writer_id = req['writer']
         text = req['text']
     except (JSONDecodeError, KeyError, ValueError):
         return HttpResponseBadRequest()
-    try:
-        writer = User.objects.get(id=writer_id)
-    except User.DoesNotExist:
-        return HttpResponseNotFound()
     comment = Comment(post = post, writer = writer, text = text)
     comment.save()
     return JsonResponse(comment.to_dict(), safe=False)
@@ -96,31 +86,31 @@ def comment(request: HttpRequest, post_id):
 
 @allow_method(['POST'])
 @get_post
-@get_user
-def like_post(user, post):
+@get_user('user')
+def like_post(request, user, post):
     post.like_user.add(user)
     return HttpResponse()
 
 
 @allow_method(['POST'])
 @get_post
-@get_user
-def hate_post(user, post):
+@get_user('user')
+def hate_post(request, user, post):
     post.hate_user.add(user)
     return HttpResponse()
 
 
 @allow_method(['POST'])
 @get_comment
-@get_user
-def like_comment(user, comment):
+@get_user('user')
+def like_comment(request, user, comment):
     comment.like_user.add(user)
     return HttpResponse()
 
 
 @allow_method(['POST'])
 @get_comment
-@get_user
-def hate_comment(user, comment):
+@get_user('user')
+def hate_comment(request, user, comment):
     comment.like_user.add(user)
     return HttpResponse()
